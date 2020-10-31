@@ -1,20 +1,18 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" class="background" style="text-align: center;">
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-title size="large" class="ion-text-center" style="margin: 50px;">{{ title }}</ion-title>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <h6>UPLOAD PHOTO</h6>
+  <ion-thumbnail>
+    <img (click)="file.click()" src="{{ image }}">
+    <input [hidden]="true" type="file" #file (change)="onFileUploaded($event, file.files)"/>
+  </ion-thumbnail>
+  <h6>NAME</h6>
+  <ion-input type="text" [(ngModel)]="username" placeholder="full name"></ion-input>
+  <h6>EMAIL</h6>
+  <ion-input type="text" [(ngModel)]="email" placeholder="name@email.com"></ion-input>
+
+  <ion-button color="dark" shape="round" (click)=submit()>Submit</ion-button>
+  <ion-button color="primary" shape="round" (click)=requestValue()>Connect</ion-button>
+
 </ion-content>
