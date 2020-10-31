@@ -43,9 +43,9 @@ export class BleService {
       });
   }
 
-  write(name, email, image) {
-    const service = 0x1234;
-    const characteristic = 0x2234;
+  write(service, characteristic, data) {
+    // const service = 0x1234;
+    // const characteristic = 0x2234;
 
     return this.ble
 
@@ -68,10 +68,7 @@ export class BleService {
         // 4) ask for the value of that characteristic (will return a DataView)
         mergeMap((returncharacteristic: BluetoothRemoteGATTCharacteristic) => {
           console.log(returncharacteristic, this.stringToBytes('hello'));
-          const str = JSON.stringify({
-            name,
-            email
-          });
+          const str = JSON.stringify(data);
           return this.ble.writeValue$(returncharacteristic, this.stringToBytes(str));
         }),
         // 5) on that DataView, get the right value

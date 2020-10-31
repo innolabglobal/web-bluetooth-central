@@ -63,8 +63,14 @@ export class HomePage {
     this.date = this.pipe.transform(new Date(), 'shortDate');
     this.time = this.pipe.transform(new Date(), 'shortTime');
 
+    const service = 0x1234;
+    const characteristic = 0x2234;
+    const data = {
+      name: this.username,
+      email: this.email
+    };
     this.service
-      .write(this.username, this.email, '')
+      .write(service, characteristic, data)
       .subscribe(res => console.log(res), err => console.log(err));
   }
 
