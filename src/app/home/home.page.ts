@@ -13,7 +13,7 @@ export class HomePage {
   title = 'DEVICE DATA INPUT';
   username = 'Test Name';
   email = 'test@demo.com';
-  image = 'assets/icon/add_icon.png';
+  image = '/assets/icon/add_icon.png';
   date;
   time;
   pipe = new DatePipe('en-US');
@@ -53,7 +53,6 @@ export class HomePage {
   }
 
   ionViewWillEnter() {
-    this.image = '../../assets/icon/add_icon.png';
     console.log('ionViewWillEnter');
     this.service.disconnectDevice();
     this.service.getDevice().subscribe(res => console.log(res), err => console.log(err));
