@@ -25,3 +25,21 @@
 #container a {
   text-decoration: none;
 }
+
+ion-content.background {
+  --background: url(../../assets/img/device_bg.jpg) 0 0/100% 100% no-repeat;
+}
+
+ion-thumbnail {
+  --size: 150px;
+  padding: 10px;
+  display: block;
+  margin: 0 auto;
+  // border: solid 5px black;
+  // border-radius: 10px;
+}
+
+ion-input {
+  border: solid 5px black;
+  border-radius: 10px;
+}
