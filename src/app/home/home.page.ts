@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { BleService } from '../services/ble.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -17,15 +16,9 @@ export class HomePage {
   date;
   time;
   pipe = new DatePipe('en-US');
-  valuesSubscription: Subscription;
   result: any;
 
   constructor(public service: BleService) {
-    service.config({
-      decoder: (value: DataView) => value.getInt8(0),
-      service: 'battery_service',
-      characteristic: 'battery_level'
-    });
     const randomDigit = Math.floor(1000 + Math.random() * 9000);
 
     this.username = 'Test Name ' + randomDigit;
@@ -34,13 +27,7 @@ export class HomePage {
 
   onFileUploaded(event, files) {
     console.log('onFileUploaded', event, files);
-    const base64 = this.getBase64(files[0]);
-    console.log('onFileUploaded image base 64 ===> ', base64);
-  }
 
-  onChange(event) {
-    console.log('onChange', event);
-    // let base64 = this.getBase64(files[0])
     if (files.length > 0) {
       console.log('getBase64 ');
       this.getBase64(files[0]);
@@ -51,8 +38,15 @@ export class HomePage {
     const reader = new FileReader();
     reader.addEventListener('load', event => {
       console.log('load', event);
+
       this.result = event.target.result;
       this.image = this.result;
+      const service = 0x1234;
+      const characteristic = 0x3234;
+
+      this.service
+        .write(service, characteristic, this.image)
+        .subscribe(res => console.log(res), err => console.log(err));
     }, false);
     if (file) {
       reader.readAsDataURL(file);
@@ -63,7 +57,6 @@ export class HomePage {
   ionViewWillEnter() {
     console.log('ionViewWillEnter');
     this.service.disconnectDevice();
-    this.service.getDevice().subscribe(res => console.log(res), err => console.log(err));
   }
 
   submit() {
