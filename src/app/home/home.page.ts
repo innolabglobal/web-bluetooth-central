@@ -41,6 +41,10 @@ export class HomePage {
   onChange(event) {
     console.log('onChange', event);
     // let base64 = this.getBase64(files[0])
+    if (files.length > 0) {
+      console.log('getBase64 ');
+      this.getBase64(files[0]);
+    }
   }
 
   getBase64(file) {
