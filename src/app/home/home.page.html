@@ -1,17 +1,22 @@
-<ion-content [fullscreen]="true" class="background" style="text-align: center;">
+<ion-content [fullscreen]="true" class="background ion-padding" style="text-align: center;">
 
-  <ion-title size="large" class="ion-text-center" style="margin: 50px;">{{ title }}</ion-title>
+  <ion-title size="large" class="ion-text-center ion-margin-top">DEVICE DATA INPUT</ion-title>
 
-  <h6>UPLOAD PHOTO</h6>
+  <h6 class="ion-margin-top">UPLOAD PHOTO</h6>
   <ion-thumbnail>
     <img (click)="file.click()" src="{{ image }}">
     <input [hidden]="true" type="file" #file (change)="onFileUploaded($event, file.files)" accept="image/*"/>
   </ion-thumbnail>
-  <h6>NAME</h6>
-  <ion-input type="text" [(ngModel)]="username" placeholder="full name"></ion-input>
-  <h6>EMAIL</h6>
-  <ion-input type="text" [(ngModel)]="email" placeholder="name@email.com"></ion-input>
 
-  <ion-button color="dark" shape="round" (click)=submit()>Submit</ion-button>
+  <ion-row class="ion-justify-content-center">
+    <ion-col size="12" size-md="4">
+      <h6>NAME</h6>
+      <ion-input type="text" [(ngModel)]="username" placeholder="full name"></ion-input>
+      <h6>EMAIL</h6>
+      <ion-input type="text" [(ngModel)]="email" placeholder="name@email.com"></ion-input>
+      <ion-button class="ion-margin" color="dark" shape="round" expand="block" (click)=submit()>Submit</ion-button>
+    </ion-col>
+  </ion-row>
+
 
 </ion-content>
