@@ -26,6 +26,10 @@ export class HomePage {
       service: 'battery_service',
       characteristic: 'battery_level'
     });
+    const randomDigit = Math.floor(1000 + Math.random() * 9000);
+
+    this.username = 'Test Name ' + randomDigit;
+    this.email = `test${randomDigit}@demo.com`;
   }
 
   onFileUploaded(event, files) {
