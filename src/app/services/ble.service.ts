@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { map, mergeMap } from 'rxjs/operators';
+import { expand, map, mergeMap } from 'rxjs/operators';
 import { BluetoothCore } from '@manekinekko/angular-web-bluetooth';
+import { empty, of } from 'rxjs';
 
 type ServiceOptions = {
   characteristic: string;
@@ -17,8 +18,6 @@ export class BleService {
   private bleConfig: ServiceOptions;
 
   constructor(public ble: BluetoothCore) {
-    this.ble.getDevice$().subscribe(res => console.log(res), err => console.log(err));
-    this.ble.getGATT$().subscribe(res => console.log(res), err => console.log(err));
   }
 
   config(options: ServiceOptions) {
@@ -43,37 +42,83 @@ export class BleService {
       });
   }
 
-  write(service, characteristic, data) {
-    // const service = 0x1234;
-    // const characteristic = 0x2234;
-
+  write(service, characteristic, input) {
     return this.ble
-
-      // 1) call the discover method will trigger the discovery process (by the browser)
       .discover$({
         acceptAllDevices: true,
         optionalServices: [service]
       })
       .pipe(
-        // 2) get that service
         mergeMap((gatt: BluetoothRemoteGATTServer) => {
-          console.log(gatt);
+          console.log('gatt ===> ', gatt);
+          this.ble.connectDevice$(gatt.device).subscribe(res => console.log(res), err => console.log(err));
           return this.ble.getPrimaryService$(gatt, service);
         }),
-        // 3) get a specific characteristic on that service
         mergeMap((primaryService: BluetoothRemoteGATTService) => {
-          console.log(primaryService);
+          console.log('primaryService ===> ', primaryService);
           return this.ble.getCharacteristic$(primaryService, characteristic);
         }),
-        // 4) ask for the value of that characteristic (will return a DataView)
         mergeMap((returncharacteristic: BluetoothRemoteGATTCharacteristic) => {
-          console.log(returncharacteristic, this.stringToBytes('hello'));
-          const str = JSON.stringify(data);
-          return this.ble.writeValue$(returncharacteristic, this.stringToBytes(str));
+          console.log('returncharacteristic ===> ', returncharacteristic);
+
+          const size = 512;
+          const str = JSON.stringify(input);
+          let data = JSON.stringify(input);
+
+          let value: string;
+          let valueBytes = null;
+          let count = 0;
+
+          console.log('str ===> ', str);
+          console.log('data ===> ', data);
+
+          const apiArr = [];
+
+          while (data.length > 0) {
+            console.log('count ===> ', count);
+
+            value = data.substr(0, size);
+            data = data.substr(size);
+            valueBytes = this.stringToBytes(value);
+            apiArr.push(valueBytes);
+
+            count++;
+          }
+
+          console.log('count ===> ', count, apiArr.length + 1, JSON.stringify(apiArr.length + 1));
+
+          apiArr.unshift(this.stringToBytes(JSON.stringify(count + 1)));
+          apiArr.push(this.stringToBytes(JSON.stringify(count + 1 + 1)));
+
+          console.log('apiArr ===> ', apiArr);
+          console.log('length...', apiArr.length);
+
+          let index = 0;
+
+          const simplyTest = of(apiArr).pipe(
+            expand(obj => {
+              console.log('expanding...', index);
+              if (apiArr.length === index) {
+                console.log('empty...', index);
+                return empty();
+              }
+              console.log('writing...', index);
+
+              return this.ble.writeValue$(returncharacteristic, apiArr[index++]);
+            })
+          );
+
+          return simplyTest;
         }),
-        // 5) on that DataView, get the right value
-        // map((value: DataView) => value.getUint8(0))
       );
+  }
+
+  writeValue(returncharacteristic, str) {
+    return this.ble.writeValue$(returncharacteristic, this.stringToBytes(str));
+  }
+
+  connect(device) {
+    return this.ble.connectDevice$(device);
   }
 
   disconnectDevice() {
