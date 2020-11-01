@@ -74,9 +74,4 @@ export class HomePage {
       .subscribe(res => console.log(res), err => console.log(err));
   }
 
-  requestValue() {
-    this.valuesSubscription = this.service.value()
-      .subscribe(res => console.log(res), error => console.log(error));
-  }
-
 }
