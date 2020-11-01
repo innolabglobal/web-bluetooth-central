@@ -41,12 +41,12 @@ export class HomePage {
 
       this.result = event.target.result;
       this.image = this.result;
-      const service = 0x1234;
-      const characteristic = 0x3234;
-
-      this.service
-        .write(service, characteristic, this.image)
-        .subscribe(res => console.log(res), err => console.log(err));
+      // const service = 0x1234;
+      // const characteristic = 0x3234;
+      //
+      // this.service
+      //   .write(service, characteristic, this.image)
+      //   .subscribe(res => console.log(res), err => console.log(err));
     }, false);
     if (file) {
       reader.readAsDataURL(file);
@@ -65,10 +65,11 @@ export class HomePage {
     this.time = this.pipe.transform(new Date(), 'shortTime');
 
     const service = 0x1234;
-    const characteristic = 0x2234;
+    const characteristic = 0x4234;
     const data = {
       name: this.username,
-      email: this.email
+      email: this.email,
+      image: this.image,
     };
     this.service
       .write(service, characteristic, data)
